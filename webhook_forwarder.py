@@ -151,7 +151,7 @@ def monitor_loop():
 
     while consecutive_failures < max_failures:
         cycle_start = time.time()
-        log("Starting monitoring cycle...")
+        log("Checking for changes...")
 
         try:
             seed_stock, seed_hash = read_stock_file(SHOP_DATA_PATH)
@@ -173,7 +173,7 @@ def monitor_loop():
                         log("Failed to send Seed Shop stock update.", "ERROR")
                         consecutive_failures += 1
                 else:
-                    log("No changes detected in Seed Shop stock.", "INFO")
+                    log("No changes in Seed Shop.", "INFO")
 
                 # Gear Shop
                 if gear_hash != last_gear_hash and gear_stock is not None:
@@ -186,7 +186,7 @@ def monitor_loop():
                         log("Failed to send Gear Shop stock update.", "ERROR")
                         consecutive_failures += 1
                 else:
-                    log("No changes detected in Gear Shop stock.", "INFO")
+                    log("No changes in Gear Shop.", "INFO")
 
                 # Honey Shop
                 if honey_hash != last_honey_hash and honey_stock is not None:
@@ -199,12 +199,9 @@ def monitor_loop():
                         log("Failed to send Honey Shop stock update.", "ERROR")
                         consecutive_failures += 1
                 else:
-                    log("No changes detected in Honey Shop stock.", "INFO")
+                    log("No changes in Honey Shop.", "INFO")
 
-            cycle_time = time.time() - cycle_start
-            sleep_time = max(60 - cycle_time, 1)
-            log(f"Cycle completed in {cycle_time:.2f}s, sleeping {sleep_time:.2f}s")
-            time.sleep(sleep_time)
+            time.sleep(1)  # Check every 1 second
 
         except KeyboardInterrupt:
             log("🟠 Loader stopped by user", "WARNING")
@@ -213,7 +210,7 @@ def monitor_loop():
         except Exception as e:
             log(f"CRITICAL ERROR: {str(e)}", "ERROR")
             consecutive_failures += 1
-            time.sleep(30)
+            time.sleep(5)
 
     if consecutive_failures >= max_failures:
         log("🔴 Loader stopped due to too many failures", "ERROR")
