@@ -1,29 +1,39 @@
--- THIS ONLY SAVES THE DATA TO THE WORKSPACE OF YOUR EXECUTOR. YOU STILL NEED THE PYTHON FILE SO THAT YOU CAN RUN IT AND SO THAT IT WILL SEND THE INFORMATION TO YOUR DISCORD WEBHOOK.
+local HttpService = game:GetService("HttpService")
 
-local function getShopStock()
+local function getShopStock(shopName)
     local stockData = {}
-    local seedShop = game:GetService("Players").LocalPlayer.PlayerGui.Seed_Shop.Frame.ScrollingFrame
+    local shop = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild(shopName)
     
-    for _, child in pairs(seedShop:GetChildren()) do
-        if child:FindFirstChild("Main_Frame") and child.Main_Frame:FindFirstChild("Stock_Text") then
-            stockData[child.Name] = child.Main_Frame.Stock_Text.Text -- Store as key-value pairs
+    if shop and shop:FindFirstChild("Frame") and shop.Frame:FindFirstChild("ScrollingFrame") then
+        for _, child in pairs(shop.Frame.ScrollingFrame:GetChildren()) do
+            if child:FindFirstChild("Main_Frame") and child.Main_Frame:FindFirstChild("Stock_Text") then
+                stockData[child.Name] = child.Main_Frame.Stock_Text.Text
+            end
         end
     end
-    
+
     return stockData
 end
 
-local function saveStockToFile()
-    local stock = getShopStock()
-    local data = game:GetService("HttpService"):JSONEncode({items = stock})
-    
-    writefile("shop_stock.json", data)
-    print("[" .. os.date("%H:%M:%S") .. "] 📦 Saved shop data")
+local function saveStockToFile(filename, data)
+    local json = HttpService:JSONEncode({items = data})
+    writefile(filename, json)
+    print("[" .. os.date("%H:%M:%S") .. "] 💾 Saved " .. filename)
 end
 
-saveStockToFile()
+local function updateShops()
+    local seedStock = getShopStock("Seed_Shop")
+    local gearStock = getShopStock("Gear_Shop")
 
+    saveStockToFile("shop_stock.json", seedStock)
+    saveStockToFile("gear_stock.json", gearStock)
+end
+
+-- Initial save
+updateShops()
+
+-- Repeat every 55 seconds
 while true do
     wait(55)
-    saveStockToFile()
+    updateShops()
 end
