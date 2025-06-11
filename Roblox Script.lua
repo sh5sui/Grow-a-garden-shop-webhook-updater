@@ -1,11 +1,17 @@
 local HttpService = game:GetService("HttpService")
 
-local function getShopStock(shopName)
+local function getShopStock(shopName, framePath)
     local stockData = {}
     local shop = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild(shopName)
-    
-    if shop and shop:FindFirstChild("Frame") and shop.Frame:FindFirstChild("ScrollingFrame") then
-        for _, child in pairs(shop.Frame.ScrollingFrame:GetChildren()) do
+
+    if shop and framePath then
+        local frame = shop
+        for _, part in pairs(framePath) do
+            frame = frame:FindFirstChild(part)
+            if not frame then return stockData end
+        end
+
+        for _, child in pairs(frame:GetChildren()) do
             if child:FindFirstChild("Main_Frame") and child.Main_Frame:FindFirstChild("Stock_Text") then
                 stockData[child.Name] = child.Main_Frame.Stock_Text.Text
             end
@@ -22,11 +28,13 @@ local function saveStockToFile(filename, data)
 end
 
 local function updateShops()
-    local seedStock = getShopStock("Seed_Shop")
-    local gearStock = getShopStock("Gear_Shop")
+    local seedStock = getShopStock("Seed_Shop", {"Frame", "ScrollingFrame"})
+    local gearStock = getShopStock("Gear_Shop", {"Frame", "ScrollingFrame"})
+    local honeyStock = getShopStock("HoneyEventShop_UI", {"Frame", "ScrollingFrame"})
 
     saveStockToFile("shop_stock.json", seedStock)
     saveStockToFile("gear_stock.json", gearStock)
+    saveStockToFile("honey_stock.json", honeyStock)
 end
 
 -- Initial save
