@@ -5,7 +5,7 @@ import requests
 import base64
 from datetime import datetime
 
-DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1382116486923026553/eoIaWbEvZkNejedPw5fv_o8TVZX7yf6vF2XjeGiz8QGiH_2V5-pViSmeZheumf8EjycL"
+DISCORD_WEBHOOK_URL = "Your Webhook URL"
 SHOP_DATA_PATH = r"C:\Users\sh5\Downloads\Xeno-v1.2.25-e6d3d66b\Xeno-v1.2.25\workspace\shop_stock.json"
 GEAR_DATA_PATH = r"C:\Users\sh5\Downloads\Xeno-v1.2.25-e6d3d66b\Xeno-v1.2.25\workspace\gear_stock.json"
 HONEY_DATA_PATH = r"C:\Users\sh5\Downloads\Xeno-v1.2.25-e6d3d66b\Xeno-v1.2.25\workspace\honey_stock.json"
